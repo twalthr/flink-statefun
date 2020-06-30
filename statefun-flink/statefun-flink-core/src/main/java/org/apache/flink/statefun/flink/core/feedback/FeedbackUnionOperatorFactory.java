@@ -17,15 +17,18 @@
  */
 package org.apache.flink.statefun.flink.core.feedback;
 
-import java.util.Objects;
-import java.util.OptionalLong;
 import org.apache.flink.api.common.typeutils.TypeSerializer;
 import org.apache.flink.statefun.flink.core.StatefulFunctionsConfig;
 import org.apache.flink.statefun.flink.core.common.SerializableFunction;
-import org.apache.flink.streaming.api.graph.StreamConfig;
-import org.apache.flink.streaming.api.operators.*;
-import org.apache.flink.streaming.runtime.streamrecord.StreamRecord;
-import org.apache.flink.streaming.runtime.tasks.StreamTask;
+import org.apache.flink.streaming.api.operators.ChainingStrategy;
+import org.apache.flink.streaming.api.operators.MailboxExecutor;
+import org.apache.flink.streaming.api.operators.OneInputStreamOperatorFactory;
+import org.apache.flink.streaming.api.operators.StreamOperator;
+import org.apache.flink.streaming.api.operators.StreamOperatorParameters;
+import org.apache.flink.streaming.api.operators.YieldingOperatorFactory;
+
+import java.util.Objects;
+import java.util.OptionalLong;
 
 public final class FeedbackUnionOperatorFactory<E>
     implements OneInputStreamOperatorFactory<E, E>, YieldingOperatorFactory<E> {
@@ -51,12 +54,11 @@ public final class FeedbackUnionOperatorFactory<E>
     this.configuration = Objects.requireNonNull(configuration);
   }
 
-  @Override
   @SuppressWarnings("unchecked")
-  public <T extends StreamOperator<E>> T createStreamOperator(
-      StreamTask<?, ?> containingTask, StreamConfig config, Output<StreamRecord<E>> output) {
-    final TypeSerializer<E> serializer =
-        config.getTypeSerializerIn1(containingTask.getUserCodeClassLoader());
+  @Override
+  public <T extends StreamOperator<E>> T createStreamOperator(StreamOperatorParameters<E> parameters) {
+    final TypeSerializer<E> serializer = parameters.getStreamConfig()
+            .getTypeSerializerIn(0, parameters.getContainingTask().getUserCodeClassLoader());
 
     FeedbackUnionOperator<E> op =
         new FeedbackUnionOperator<>(
@@ -66,9 +68,11 @@ public final class FeedbackUnionOperatorFactory<E>
             configuration.getFeedbackBufferSize().getBytes(),
             serializer,
             mailboxExecutor);
-
-    op.setup(containingTask, config, output);
-
+    op.setProcessingTimeService(parameters.getProcessingTimeService());
+    op.setup(
+            parameters.getContainingTask(),
+            parameters.getStreamConfig(),
+            parameters.getOutput());
     return (T) op;
   }
 

@@ -22,10 +22,12 @@ import java.util.Objects;
 import org.apache.flink.statefun.flink.core.StatefulFunctionsConfig;
 import org.apache.flink.statefun.flink.core.message.Message;
 import org.apache.flink.statefun.sdk.io.EgressIdentifier;
-import org.apache.flink.streaming.api.graph.StreamConfig;
-import org.apache.flink.streaming.api.operators.*;
-import org.apache.flink.streaming.runtime.streamrecord.StreamRecord;
-import org.apache.flink.streaming.runtime.tasks.StreamTask;
+import org.apache.flink.streaming.api.operators.ChainingStrategy;
+import org.apache.flink.streaming.api.operators.MailboxExecutor;
+import org.apache.flink.streaming.api.operators.OneInputStreamOperatorFactory;
+import org.apache.flink.streaming.api.operators.StreamOperator;
+import org.apache.flink.streaming.api.operators.StreamOperatorParameters;
+import org.apache.flink.streaming.api.operators.YieldingOperatorFactory;
 import org.apache.flink.util.OutputTag;
 
 public final class FunctionGroupDispatchFactory
@@ -55,14 +57,16 @@ public final class FunctionGroupDispatchFactory
   @Override
   @SuppressWarnings("unchecked")
   public <T extends StreamOperator<Message>> T createStreamOperator(
-      StreamTask<?, ?> containingTask, StreamConfig config, Output<StreamRecord<Message>> output) {
-
-    FunctionGroupOperator fn =
+      StreamOperatorParameters<Message> parameters) {
+    FunctionGroupOperator op =
         new FunctionGroupOperator(
             sideOutputs, configuration, mailboxExecutor, ChainingStrategy.ALWAYS);
-    fn.setup(containingTask, config, output);
-
-    return (T) fn;
+    op.setProcessingTimeService(parameters.getProcessingTimeService());
+    op.setup(
+            parameters.getContainingTask(),
+            parameters.getStreamConfig(),
+            parameters.getOutput());
+    return (T) op;
   }
 
   @Override

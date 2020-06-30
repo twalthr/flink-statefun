@@ -17,6 +17,8 @@
  */
 package org.apache.flink.statefun.flink.core;
 
+import static org.apache.flink.util.FlinkUserCodeClassLoader.NOOP_EXCEPTION_HANDLER;
+
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Map;
@@ -74,7 +76,7 @@ public class StatefulFunctionsJob {
     if (classLoader == null) {
       URLClassLoader flinkClassLoader =
           FlinkUserCodeClassLoaders.parentFirst(
-              new URL[0], StatefulFunctionsJob.class.getClassLoader());
+              new URL[0], StatefulFunctionsJob.class.getClassLoader(), NOOP_EXCEPTION_HANDLER);
       Thread.currentThread().setContextClassLoader(flinkClassLoader);
     }
   }

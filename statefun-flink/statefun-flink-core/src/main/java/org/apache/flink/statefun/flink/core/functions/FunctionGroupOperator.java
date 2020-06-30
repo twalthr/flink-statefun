@@ -98,7 +98,7 @@ public class FunctionGroupOperator extends AbstractStreamOperator<Message>
         new ListStateDescriptor<>(
             FlinkStateDelayedMessagesBuffer.BUFFER_STATE_NAME, envelopeSerializer.duplicate());
     final MapState<Long, Message> asyncOperationState =
-        getRuntimeContext().getMapState(asyncOperationStateDescriptor);
+        context.getKeyedStateStore().getMapState(asyncOperationStateDescriptor);
 
     Objects.requireNonNull(mailboxExecutor, "MailboxExecutor is unexpectedly NULL");
 
@@ -114,7 +114,8 @@ public class FunctionGroupOperator extends AbstractStreamOperator<Message>
             statefulFunctionsUniverse,
             getRuntimeContext(),
             getKeyedStateBackend(),
-            new FlinkTimerServiceFactory(super.timeServiceManager),
+            new FlinkTimerServiceFactory(
+                super.getTimeServiceManager().orElseThrow(IllegalStateException::new)),
             delayedMessagesBufferState(delayedMessageStateDescriptor),
             sideOutputs,
             output,
