@@ -41,15 +41,11 @@ public final class SqlPlanProviderFunction implements StatefulFunction {
 			final SqlPlanBroadcastMessage message = (SqlPlanBroadcastMessage) input;
 			planTable.set(message.getQueryId(), message.getPlan());
 		} else if (input instanceof SqlPlanRequestMessage) {
-			final SqlPlanRequestMessage message = (SqlPlanRequestMessage) input;
-			final Map<Integer, SqlEvaluationPlan> newPlans = new HashMap<>();
+			final Map<Integer, SqlEvaluationPlan> plans = new HashMap<>();
 			for (Map.Entry<Integer, SqlEvaluationPlan> entry : planTable.entries()) {
-				if (entry.getKey() > message.getLastQueryId()) {
-					newPlans.put(entry.getKey(), entry.getValue());
-				}
+				plans.put(entry.getKey(), entry.getValue());
 			}
-			context.reply(new SqlPlanResponseMessage(newPlans));
+			context.reply(new SqlPlanResponseMessage(plans));
 		}
-
 	}
 }

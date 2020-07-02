@@ -44,7 +44,7 @@ import org.apache.flink.statefun.sdk.state.TableAccessor;
 
 public final class FlinkState implements State {
 
-  private final RuntimeContext runtimeContext;
+  public final RuntimeContext runtimeContext;
   private final KeyedStateBackend<Object> keyedStateBackend;
   private final DynamicallyRegisteredTypes types;
 

@@ -29,14 +29,14 @@ import org.apache.flink.statefun.flink.core.state.State;
 import org.apache.flink.statefun.sdk.Address;
 import org.apache.flink.statefun.sdk.io.EgressIdentifier;
 
-final class ReusableContext implements ApplyingContext, AsyncWaiter {
+public final class ReusableContext implements ApplyingContext, AsyncWaiter {
   private final Partition thisPartition;
   private final LocalSink localSink;
   private final RemoteSink remoteSink;
   private final DelaySink delaySink;
   private final AsyncSink asyncSink;
   private final SideOutputSink sideOutputSink;
-  private final State state;
+  public final State state;
   private final MessageFactory messageFactory;
 
   private Message in;

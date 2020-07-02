@@ -26,12 +26,8 @@ public final class SqlResultMessage {
 		this.result = result;
 	}
 
-	public String getResult() {
-		return result;
-	}
-
 	@Override
 	public String toString() {
-		return "SqlResultMessage(" + result + ")";
+		return result;
 	}
 }

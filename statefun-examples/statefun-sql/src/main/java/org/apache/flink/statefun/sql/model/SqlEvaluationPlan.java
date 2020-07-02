@@ -18,6 +18,9 @@
 
 package org.apache.flink.statefun.sql.model;
 
+import org.apache.flink.api.common.typeutils.TypeSerializer;
+import org.apache.flink.table.data.RowData;
+
 import java.util.Map;
 
 public final class SqlEvaluationPlan {
@@ -27,9 +30,23 @@ public final class SqlEvaluationPlan {
 
 	private final Map<Integer, Object> operators;
 
-	public SqlEvaluationPlan(Map<Integer, Integer> routing, Map<Integer, Object> operators) {
+	private final Map<Integer, TypeSerializer<RowData>> keySerializers;
+
+	private final Map<Integer, TypeSerializer<RowData>> dataSerializers;
+
+	private final String outputType;
+
+	public SqlEvaluationPlan(
+			Map<Integer, Integer> routing,
+			Map<Integer, Object> operators,
+			Map<Integer, TypeSerializer<RowData>> keySerializers,
+			Map<Integer, TypeSerializer<RowData>> dataSerializers,
+			String outputType) {
 	  this.routing = routing;
 	  this.operators = operators;
+	  this.keySerializers = keySerializers;
+	  this.dataSerializers = dataSerializers;
+	  this.outputType = outputType;
 	}
 
 	public Map<Integer, Integer> getRouting() {
@@ -38,5 +55,17 @@ public final class SqlEvaluationPlan {
 
 	public Map<Integer, Object> getOperators() {
 	  return operators;
+	}
+
+	public Map<Integer, TypeSerializer<RowData>> getKeySerializers() {
+		return keySerializers;
+	}
+
+	public Map<Integer, TypeSerializer<RowData>> getDataSerializers() {
+		return dataSerializers;
+	}
+
+	public String getOutputType() {
+		return outputType;
 	}
 }

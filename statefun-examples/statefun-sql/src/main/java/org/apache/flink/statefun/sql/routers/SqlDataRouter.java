@@ -20,12 +20,12 @@ package org.apache.flink.statefun.sql.routers;
 
 import org.apache.flink.statefun.sdk.io.Router;
 import org.apache.flink.statefun.sql.SqlConstants;
-import org.apache.flink.statefun.sql.messages.SqlDataMessage;
+import org.apache.flink.statefun.sql.messages.SqlSourceMessage;
 
-public final class SqlDataRouter implements Router<SqlDataMessage> {
+public final class SqlDataRouter implements Router<SqlSourceMessage> {
 
 	@Override
-	public void route(SqlDataMessage message, Downstream<SqlDataMessage> downstream) {
-		downstream.forward(SqlConstants.SQL_EVALUATION_FUNCTION, message.getKey(), message);
+	public void route(SqlSourceMessage message, Downstream<SqlSourceMessage> downstream) {
+		downstream.forward(SqlConstants.SQL_EVALUATION_FUNCTION, new String(message.getKey()), message);
 	}
 }

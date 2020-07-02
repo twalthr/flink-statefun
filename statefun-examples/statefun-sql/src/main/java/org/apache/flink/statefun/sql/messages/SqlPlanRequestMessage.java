@@ -20,13 +20,6 @@ package org.apache.flink.statefun.sql.messages;
 
 public final class SqlPlanRequestMessage {
 
-	private final int lastQueryId;
-
-	public SqlPlanRequestMessage(int lastQueryId) {
-		this.lastQueryId = lastQueryId;
-	}
-
-	public int getLastQueryId() {
-		return lastQueryId;
-	}
+	public static final SqlPlanRequestMessage INSTANCE = new SqlPlanRequestMessage();
+	// nothing to do
 }

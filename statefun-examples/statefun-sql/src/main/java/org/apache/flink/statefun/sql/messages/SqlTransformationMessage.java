@@ -18,18 +18,39 @@
 
 package org.apache.flink.statefun.sql.messages;
 
-public final class SqlDataMessage {
+public final class SqlTransformationMessage {
 
-	private final String key;
+	private final int queryId;
+
+	private final int sourceOperationId;
+
+	private final int targetOperationId;
+
+	private final byte[] key;
 
 	private final byte[] data;
 
-	public SqlDataMessage(String key, byte[] data) {
+	public SqlTransformationMessage(int queryId, int sourceOperationId, int targetOperationId, byte[] key, byte[] data) {
+		this.queryId = queryId;
+		this.sourceOperationId = sourceOperationId;
+		this.targetOperationId = targetOperationId;
 		this.key = key;
 		this.data = data;
 	}
 
-	public String getKey() {
+	public int getQueryId() {
+		return queryId;
+	}
+
+	public int getSourceOperationId() {
+		return sourceOperationId;
+	}
+
+	public int getTargetOperationId() {
+		return targetOperationId;
+	}
+
+	public byte[] getKey() {
 		return key;
 	}
 

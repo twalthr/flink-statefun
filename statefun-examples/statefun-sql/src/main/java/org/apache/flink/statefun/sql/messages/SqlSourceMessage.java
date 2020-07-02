@@ -16,29 +16,24 @@
  * limitations under the License.
  */
 
-package org.apache.flink.statefun.sql.functions;
+package org.apache.flink.statefun.sql.messages;
 
-import org.apache.flink.statefun.sdk.Context;
-import org.apache.flink.statefun.sdk.StatefulFunction;
-import org.apache.flink.statefun.sql.messages.SqlPlanResponseMessage;
-import org.apache.flink.statefun.sql.model.SqlEvaluationPlan;
+public final class SqlSourceMessage {
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.LoadingCache;
+	private final byte[] key;
 
-import java.util.concurrent.TimeUnit;
+	private final byte[] data;
 
-public final class SqlEvalutationFunction implements StatefulFunction {
+	public SqlSourceMessage(byte[] key, byte[] data) {
+		this.key = key;
+		this.data = data;
+	}
 
-	Cache<Integer, SqlEvaluationPlan> planCache = CacheBuilder.newBuilder()
-			.expireAfterWrite(10, TimeUnit.SECONDS)
-			.build();
+	public byte[] getKey() {
+		return key;
+	}
 
-	@Override
-	public void invoke(Context context, Object input) {
-		if (input instanceof SqlPlanResponseMessage) {
-
-		}
+	public byte[] getData() {
+		return data;
 	}
 }

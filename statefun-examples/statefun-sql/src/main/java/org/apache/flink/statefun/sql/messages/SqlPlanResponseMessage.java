@@ -24,13 +24,13 @@ import java.util.Map;
 
 public final class SqlPlanResponseMessage {
 
-	private final Map<Integer, SqlEvaluationPlan> newPlans;
+	private final Map<Integer, SqlEvaluationPlan> plans;
 
-	public SqlPlanResponseMessage(Map<Integer, SqlEvaluationPlan> newPlans) {
-		this.newPlans = newPlans;
+	public SqlPlanResponseMessage(Map<Integer, SqlEvaluationPlan> plans) {
+		this.plans = plans;
 	}
 
-	public Map<Integer, SqlEvaluationPlan> getNewPlans() {
-		return newPlans;
+	public Map<Integer, SqlEvaluationPlan> getPlans() {
+		return plans;
 	}
 }
